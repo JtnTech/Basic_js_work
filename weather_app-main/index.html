@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #333335 0%, #141214 100%);
+      color: white;
+    }
+
+    #cityInput {
+      width: 50px;
+      border-bottom: 1px solid black;
+    }
+
+    /* #cityInput:focus { */
+    /* width: 80px; */
+    /* } */
+
+
+    .card {
+      width: 90%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.3);
+    }
+
+    .search {
+      display: flex;
+      /* border: 1px solid black; */
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .search input {
+      flex: 1;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 20px;
+      outline: none;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    .search input::placeholder {
+      color: #eee;
+    }
+
+    .search button {
+      background: linear-gradient(135deg, #8e2de2, #4a00e0);
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .weather_icon {
+      width: 100px;
+      margin: 20px auto;
+    }
+
+    .temp {
+      font-size: 60px;
+      margin: 10px 0;
+    }
+
+    .city {
+      font-size: 28px;
+      font-weight: 500;
+    }
+
+    .details {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 30px;
+    }
+
+    .col {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .col img {
+      width: 35px;
+      filter: brightness(0) invert(1);
+    }
+
+    .humidity,
+    .wind {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .details p {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    /* Responsive */
+    @media (max-width: 400px) {
+      .card {
+        padding: 20px;
+      }
+
+      .temp {
+        font-size: 48px;
+      }
+
+      .city {
+        font-size: 22px;
+      }
+
+      .search input {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="search">
+      <input type="text" placeholder="Enter your city name" spellcheck="false" id="cityInput">
+      <button id="searchBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="22" fill="none" viewBox="0 0 24 24">
+          <path stroke="#fff" stroke-linecap="round" stroke-width="2"
+            d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="weather">
+      <img id="weatherIcon" src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" alt="weather"
+        class="weather_icon">
+      <h1 class="temp" id="temp">--°C</h1>
+      <h2 class="city" id="cityName">City</h2>
+
+      <div class="details">
+        <div class="col">
+          <img src="https://cdn-icons-png.flaticon.com/512/414/414974.png" alt="humidity">
+          <div>
+            <p class="humidity" id="humidity">--%</p>
+            <p>Humidity</p>
+          </div>
+        </div>
+
+        <div class="col">
+          <img src="https://cdn-icons-png.flaticon.com/512/481/481476.png" alt="wind">
+          <div>
+            <p class="wind" id="wind">-- km/h</p>
+            <p>Wind Speed</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Replace with your free OpenWeather API key
+    const apiKey = "68d5f58b4bf04bc18b1104817250111";
+
+    const searchBtn = document.getElementById("searchBtn");
+    const cityInput = document.getElementById("cityInput");
+    const temp = document.getElementById("temp");
+    const cityName = document.getElementById("cityName");
+    const humidity = document.getElementById("humidity");
+    const wind = document.getElementById("wind");
+    const weatherIcon = document.getElementById("weatherIcon");
+
+    async function getWeather(city) {
+      if (!city) {
+        alert("Please enter a city name!");
+        return;
+      }
+
+      // ✅ Use the dynamic city name (not always "London")
+      const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=7&aqi=no&alerts=no`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // ✅ Handle errors properly (WeatherAPI uses 'error' object)
+        if (data.error) {
+          alert("City not found!");
+          return;
+        }
+
+        // ✅ Correct property paths for WeatherAPI
+        cityName.textContent = `${data.location.name}, ${data.location.country}`;
+        temp.textContent = `${data.current.temp_c}°C`;
+        humidity.textContent = `${data.current.humidity}%`;
+        wind.textContent = `${data.current.wind_kph} km/h`;
+
+        // ✅ WeatherAPI provides icon URLs directly
+        weatherIcon.src = `https:${data.current.condition.icon}`;
+      } catch (error) {
+        alert("Error fetching weather data!");
+        console.error(error);
+      }
+    }
+
+    // ✅ Search button click
+    searchBtn.addEventListener("click", () => {
+      getWeather(cityInput.value.trim());
+    });
+
+    // ✅ Enter key press
+    cityInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        getWeather(cityInput.value.trim());
+      }
+    });
+
+
+  </script>
+</body>
+
+</html>

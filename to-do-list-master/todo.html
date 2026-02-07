@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <title>To-do-List</title>
+    <style>
+        /* ...existing code... */
+        body {
+            font-family: 'poppins', sans-serif;
+            /* background: linear-gradient(135deg, #8052ec, #d161ff); */
+            background-color: lightslategray;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ...existing code... */
+
+        .container {
+            border: 2px solid #fff;
+            width: 40%;
+            min-width: 450px;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+            padding: 30px 40px;
+        }
+
+        #newtask {
+            background-color: hsl(0, 0%, 100%);
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            /* text-align: center; */
+        }
+
+        #newtask input:focus {
+            outline: none;
+            border-color: #8052ec;
+            box-shadow: 1px 1px 3px rgba(128, 82, 236, 0.5);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #newtask input {
+            width: 70%;
+            color: #333;
+            padding: 12px;
+            border: lightblue 1px solid;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            /* margin-bottom: 20px; */
+            position: relative;
+        }
+
+        #add-task {
+            width: auto;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #8052ec;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 7px 7px 5px rgba(81, 33, 253, 0.1);
+        }
+
+        #add-task:hover {
+            background-color: #d161ff;
+            box-shadow: 7px 7px 5px rgba(81, 33, 253, 0.2);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #task-List {
+            background: linear-gradient(135deg, rgb(128, 82, 236), rgb(209, 97, 255));
+            list-style: none;
+            padding: 30px 40px;
+            background-color: #f1eeee;
+            margin-top: 30px;
+            /* border: 1px solid black; */
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+
+        .task {
+
+            display: flex;
+            height: 100%;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            box-shadow: 0 2px 6px rgba(128, 82, 236, 0.08);
+        }
+
+        /* ...existing code... */
+        .delete {
+            background: linear-gradient(135deg, #751b1d, #f44336);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 10px;
+            margin-right: 0px;
+            cursor: pointer;
+            box-shadow: 2px 2px 5px rgba(128, 82, 236, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #0a4715;
+            opacity: 0.7;
+            transition: all 0.3s;
+        }
+
+        .delete:hover {
+            background-color: #8052ec;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="newtask">
+            <input type="text" id="task" placeholder="Enter your task here..." />
+            <button id="add-task">Add Task</button>
+        </div>
+
+        <div id="task-List" aria-placeholder="your task will be here"></div>
+
+    </div>
+</body>
+<script>
+    document.getElementById('add-task').onclick = function () {
+        if (document.querySelector("#newtask input").value.length == 0) {
+            alert("Plz Enter a Task");
+        } else {
+            document.querySelector("#task-List").innerHTML += `
+                <div class="task"> 
+                    <span class="taskname">
+                        ${document.querySelector("#newtask input").value}
+                    </span>
+                    <button class="delete">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `;
+
+            // Select all delete buttons
+            var current_tasks = document.querySelectorAll(".delete");
+            for (let i = 0; i < current_tasks.length; i++) {
+                current_tasks[i].onclick = function () {
+                    this.parentNode.remove();
+                }
+            }
+
+
+            var tasks = document.querySelectorAll(".taskname");
+
+            for (let i = 0; i < tasks.length; i++) {
+                tasks[i].onclick = function () {
+                    this.classList.toggle('completed');
+                }
+            }
+        }
+    }
+    document.querySelector("#add-task").addEventListener("Keydown", function (event) {
+        if (event.key == "Enter") {
+            document.querySelector("#task-List").innerHTML += `
+                <div class="task"> 
+                    <span class="taskname">
+                        ${document.querySelector("#newtask input").value}
+                    </span>
+                    <button class="delete">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `
+        }
+
+
+        
+
+    })
+</script>
+
+</html>

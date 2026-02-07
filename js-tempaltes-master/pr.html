@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="start">Start Interval</button>
+<button id="stop">Stop Interval</button>
+
+<script>
+let counter = 0;
+let timer;
+
+document.getElementById("start").addEventListener("click", () => {
+  timer = setInterval(() => {
+    counter++;
+    console.log("Counter: " + counter);
+  }, 1000);
+});
+
+document.getElementById("stop").addEventListener("click", () => {
+  clearInterval(timer); // Interval ko stop karo
+  console.log("⛔ Interval stopped!");
+});
+
+// Timeout ek baar hi chalega
+setTimeout(() => {
+  console.log("🎉 Ye 5 sec baad ek hi baar chalega!");
+}, 5000);
+</script>
+
+</body>
+</html>

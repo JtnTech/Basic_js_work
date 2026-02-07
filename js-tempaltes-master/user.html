@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile Cards</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    #app {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    .card h3 {
+      margin: 5px 0;
+    }
+    .card p {
+      color: #666;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h2>👤 User Profiles</h2>
+  <div id="app"></div>
+
+  <!-- Template -->
+  <template id="profileTemplate">
+    <div class="card">
+      <img class="avatar" src="" alt="User Image">
+      <h3 class="name"></h3>
+      <p class="role"></p>
+    </div>
+  </template>
+
+  <script>
+    // Factory Function with destructuring
+    function createProfile({ name, role, avatar }) {
+      const template = document.getElementById("profileTemplate");
+      const clone = template.content.cloneNode(true);
+
+      clone.querySelector(".avatar").src = avatar;
+      clone.querySelector(".name").textContent = name;
+      clone.querySelector(".role").textContent = role;
+
+      return clone;
+    }
+
+    const users = [
+      { name: "Jatin", role: "Frontend Dev", avatar: "https://i.pravatar.cc/80?img=1" },
+      { name: "Kala Slayer", role: "Backend Dev", avatar: "https://i.pravatar.cc/80?img=2" },
+      { name: "Akira", role: "UI Designer", avatar: "https://i.pravatar.cc/80?img=3" }
+    ];
+
+    const app = document.getElementById("app");
+    
+    users.forEach(user => app.appendChild(createProfile(user)));
+  </script>
+</body>
+</html>

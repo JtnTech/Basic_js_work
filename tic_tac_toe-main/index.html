@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tic tac toe</title>
+    <style>
+        * {
+            color: white;
+            font-family: sans-serif;
+            transition: ease-in-out;
+            user-select: none;
+        }
+
+        .align {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body {
+            background-color: rgba(0, 0, 0, 0.900);
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            text-align: center;
+            padding-top: 5vh;
+        }
+
+        .turn-container {
+            width: 170px;
+            height: 80px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            position: relative;
+        }
+
+        .turn-container h3 {
+            margin: 0;
+            grid-column-start: 1;
+            grid-column-end: 3;
+        }
+
+        .turn-container .turn-box {
+            border: 3px solid black;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .turn-container .turn-box:nth-child(even) {
+            border-right: none;
+        }
+
+        .bg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 85px;
+            height: 40px;
+            background-color: blue;
+            z-index: -5;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            height: 250px;
+            width: 250px;
+            margin: 30px auto;
+            border: 2px solid black;
+        }
+
+        .box {
+            cursor: pointer;
+            font-size: 2rem;
+            font-weight: 600;
+            border: 2px solid black;
+        }
+
+        .box:hover {
+            background-color: brown;
+        }
+
+        #playagain {
+            background-color: rgb(121, 7, 7);
+            padding: 10px 25px;
+            border: none;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+
+        #playagain:hover {
+            padding: 10px 28px;
+            background-color: aqua;
+            color: rgb(26, 2, 2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="turn-container">
+        <h3>TURN FOR</h3>
+        <div class="turn-box align">X</div>
+        <div class="turn-box align">O</div>
+        <div class="bg"></div>
+    </div>
+
+    <div class="main-grid">
+        <div class="box align" data-index="0"></div>
+        <div class="box align" data-index="1"></div>
+        <div class="box align" data-index="2"></div>
+        <div class="box align" data-index="3"></div>
+        <div class="box align" data-index="4"></div>
+        <div class="box align" data-index="5"></div>
+        <div class="box align" data-index="6"></div>
+        <div class="box align" data-index="7"></div>
+        <div class="box align" data-index="8"></div>
+    </div>
+
+    <h2 id="result"></h2>
+    <button id="playagain">PLAY AGAIN</button>
+
+    <script>
+        let boxes = document.querySelectorAll(".box");
+        let turn = "X";
+        let isgameover = false;
+
+        function changeturn() {
+            if (turn == "X") {
+                turn = "O";
+                document.querySelector(".bg").style.left = "85px";
+            } else {
+                turn = "X";
+                document.querySelector(".bg").style.left = "0";
+            }
+        }
+
+        function checkwin() {
+            let winconditions = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+
+            winconditions.forEach(condition => {
+                let [a, b, c] = condition;
+                if (boxes[a].innerHTML === boxes[b].innerHTML && boxes[a].innerHTML === boxes[c].innerHTML && boxes[a].innerHTML !== "") {
+                    isgameover = true;
+                    document.querySelector("#result").innerHTML = turn + " wins";
+                    document.querySelector("#playagain").style.display = "inline";
+                    boxes[a].style.backgroundColor = "#08D9D6";
+                    boxes[b].style.backgroundColor = "#08D9D6";
+                    boxes[c].style.backgroundColor = "#08D9D6";
+                    boxes[a].style.color = "#000";
+                    boxes[b].style.color = "#000";
+                    boxes[c].style.color = "#000";
+                }
+            });
+        }
+
+        function checkdraw() {
+            if (!isgameover) {
+                let isdraw = true;
+                boxes.forEach(box => {
+                    if (box.innerHTML === "") isdraw = false;
+                });
+
+                if (isdraw) {
+                    isgameover = true;
+                    document.querySelector("#result").innerHTML = "Draw";
+                    document.querySelector("#playagain").style.display = "inline";
+                }
+            }
+        }
+
+        boxes.forEach(box => {
+            box.addEventListener("click", () => {
+                if (!isgameover && box.innerHTML === "") {
+                    box.innerHTML = turn;
+                    checkwin();
+                    checkdraw();
+                    changeturn();
+                }
+            });
+        });
+
+        document.querySelector("#playagain").addEventListener("click", () => {
+            isgameover = false;
+            turn = "X";
+            document.querySelector(".bg").style.left = "0";
+            document.querySelector("#result").innerHTML = "";
+            document.querySelector("#playagain").style.display = "none";
+
+            boxes.forEach(box => {
+                box.innerHTML = "";
+                box.style.removeProperty("background-color");
+                box.style.color = "#fff";
+            });
+        });
+    </script>
+</body>
+
+</html>

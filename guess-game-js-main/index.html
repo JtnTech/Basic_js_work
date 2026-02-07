@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GUESS THE NUMBER</title>
+
+    <style>
+        body {
+            color: white;
+            background-color: black;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            text-transform: capitalize;
+            font-family: "Audiowide", serif;
+            font-weight: 400;
+            box-sizing: border-box;
+            font-style: normal;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            position: relative;
+            width: 90%;
+            max-width: 400px;
+            margin: 120px auto;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 16px;
+            color: gray;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .input-container {
+            position: relative;
+            width: 100%;
+            justify-content: center;
+        }
+
+        input {
+            width: 100%;
+            height: 50px;
+            padding: 10px;
+            border: 2px solid rgb(250, 250, 250);
+            border-radius: 10px;
+            font-size: 18px;
+            outline: none;
+            background-color: transparent;
+            color: rgb(252, 249, 249);
+            transition: 0.3s ease-in-out;
+            position: relative;
+            z-index: 1;
+        }
+
+        .placeholder {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgb(252, 250, 250);
+            font-size: 18px;
+            transition: 0.4s ease-in-out;
+            pointer-events: none;
+            background: transparent;
+            padding: 0 5px;
+            z-index: 0;
+        }
+
+        input:focus + .placeholder,
+        input:not(:placeholder-shown) + .placeholder {
+            top: 3px;
+            font-size: 14px;
+            color: rgb(239, 238, 243);
+            border: 1px solid white;
+            background-color: rgb(26, 24, 24);
+            padding: 5px 12px;
+            border-radius: 10px;
+            z-index: 12;
+        }
+
+        .nav {
+            background-color: gray;
+            color: white;
+            display: flex;
+            align-items: center;
+            height: 60px;
+            justify-content: center;
+            width: 100%;
+            gap: 30px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: white;
+            background-color: black;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .nav a:hover {
+            background-color: transparent;
+            border: 1px solid white;
+        }
+
+        button {
+            position: relative;
+            margin-top: -10px;
+            background-color: transparent;
+            color: white;
+            border: 1px solid white;
+            border-radius: 10px;
+            padding: 5px 12px;
+            transition: 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+        }
+
+        .result {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .restart-btn {
+            display: none;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: white;
+            color: black;
+            border: none;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .restart-btn:hover {
+            background-color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav">
+        <a href="#">Home</a>
+        <a href="#">YouTube Channel</a>
+    </div>
+
+    <div class="container">
+        <h1>Number Guessing Game</h1>
+        <p>Try and guess a random number between 1 and 100.<br> You have 10 attempts to guess the right number.</p>
+
+        <div class="input-container">
+            <input type="text" id="guessInput" placeholder=" " />
+            <label for="guessInput" class="placeholder">Enter your number</label>
+        </div>
+        <p>Previous Guesses: <span class="preguess"></span></p>
+        <p>Guesses Remaining: <span class="number">10</span></p>
+        <button id="submitGuess">Submit Guess</button>
+        <p class="result"></p>
+        <button class="restart-btn" onclick="restartGame()">Restart Game</button>
+    </div>
+
+    <script>
+        let randomNumber = Math.floor(Math.random() * 100) + 1;
+        let attemptsLeft = 10;
+        let previousGuesses = [];
+
+        const guessInput = document.getElementById("guessInput");
+        const submitButton = document.getElementById("submitGuess");
+        const resultText = document.querySelector(".result");
+        const previousGuessesText = document.querySelector(".preguess");
+        const attemptsLeftText = document.querySelector(".number");
+        const restartButton = document.querySelector(".restart-btn");
+
+        submitButton.addEventListener("click", checkGuess);
+
+        function checkGuess() {
+            let userGuess = parseInt(guessInput.value);
+
+            if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                resultText.textContent = "Please enter a valid number between 1 and 100!";
+                resultText.style.color = "red";
+                return;
+            }
+
+            if (previousGuesses.includes(userGuess)) {
+                resultText.textContent = "You've already guessed this number!";
+                resultText.style.color = "yellow";
+                return;
+            }
+
+            previousGuesses.push(userGuess);
+            previousGuessesText.textContent = previousGuesses.join(", ");
+            attemptsLeft--;
+
+            if (userGuess === randomNumber) {
+                resultText.textContent = `🎉 Congratulations! You guessed the right number: ${randomNumber}`;
+                resultText.style.color = "green";
+                endGame();
+            } else if (attemptsLeft === 0) {
+                resultText.textContent = `❌ Game Over! The correct number was ${randomNumber}`;
+                resultText.style.color = "red";
+                endGame();
+            } else {
+                if (userGuess < randomNumber) {
+                    resultText.textContent = "Too low! Try again.";
+                    resultText.style.color = "orange";
+                } else {
+                    resultText.textContent = "Too high! Try again.";
+                    resultText.style.color = "orange";
+                }
+            }
+
+            attemptsLeftText.textContent = attemptsLeft;
+            guessInput.value = "";
+        }
+
+        function endGame() {
+            guessInput.disabled = true;
+            submitButton.disabled = true;
+            restartButton.style.display = "block";
+        }
+
+        function restartGame() {
+            randomNumber = Math.floor(Math.random() * 100) + 1;
+            attemptsLeft = 10;
+            previousGuesses = [];
+            previousGuessesText.textContent = "";
+            attemptsLeftText.textContent = attemptsLeft;
+            resultText.textContent = "";
+            guessInput.disabled = false;
+            submitButton.disabled = false;
+            guessInput.value = "";
+            restartButton.style.display = "none";
+        }
+    </script>
+</body>
+
+</html>

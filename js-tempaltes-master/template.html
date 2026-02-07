@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Component System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        #app {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            margin: 0 0 10px;
+        }
+
+        .card p {
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>🌟 Mini Component System Demo</h2>
+    <div id="app"></div>
+
+    <!-- Template for Card -->
+    <template id="cardTemplate">
+        <div class="card">
+            <h3 class="title"></h3>
+            <p class="desc"></p>
+            <p class="name"></p>
+        </div>
+    </template>
+
+    <script>
+        // Component Factory
+        function createCard({ title, desc ,name}) {
+            const template = document.getElementById("cardTemplate");
+            const clone = template.content.cloneNode(true);
+
+            clone.querySelector(".title").textContent = title;
+            clone.querySelector(".desc").textContent = desc;
+            clone.querySelector(".name").textContent = name;
+
+            return clone;
+        }
+
+        const app = document.getElementById("app");
+
+        // Example: Adding components dynamically
+        const data = [
+            { title: "🚀 Component 1", desc: "This is a reusable card component." , name:'jatin' },
+            { title: "🔥 Component 2", desc: "No frameworks needed." },
+            { title: "⚡ Component 3", desc: "Fast DOM rendering using <template>." },
+            { title: "🔥 Component 2", desc: "No frameworks needed." },
+            { title: "⚡ Component 3", desc: "Fast DOM rendering using <template>." },
+
+        ];
+        //createcard function working like this 
+        // let item = createcard({title,desc})  after that i added into app..
+        data.forEach(item => {
+            app.appendChild(createCard(item));
+        });
+
+        // data.forEach(item => {
+        //     app.appendChild(createCard(item));
+        // });
+
+        // data.forEach(item => {
+        //     app.appendChild(createCard(item));
+        // });
+
+        // data.forEach(item => {
+        //     app.appendChild(createCard(item));
+        // });
+
+//we here using for of loop for object datas access ke lliye
+// for (let i = 0; i < 10; i++) {
+//    for (const item of data) {
+//              app.appendChild(createCard(item));
+//         }
+// }
+
+
+
+//    for (const item of data) {
+//              app.appendChild(createCard(item));
+//         }
+        
+    </script>
+</body>
+
+</html>
